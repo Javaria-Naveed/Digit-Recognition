@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digit Recognition</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+      }
+      h1 {
+        color: #333;
+      }
+      form {
+        margin-top: 20px;
+      }
+      input[type="file"] {
+        padding: 10px;
+        border: 2px solid #333;
+        border-radius: 5px;
+        background-color: #fff;
+        color: #333;
+        font-size: 16px;
+      }
+      input[type="submit"] {
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      #prediction {
+        margin-top: 20px;
+        font-size: 24px;
+      }
+      #uploaded-image {
+        margin-top: 20px;
+        max-width: 300px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Digit Recognition</h1>
+    <h3>Enter an image with a digit with 0-9</h3>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <input type="file" name="file" />
+      <input type="submit" value="Upload" />
+    </form>
+    <div id="prediction"></div>
+    <img id="uploaded-image" />
+    <script>
+      document
+        .querySelector("form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const formData = new FormData();
+          formData.append("file", this.file.files[0]);
+          const response = await fetch("/upload", {
+            method: "POST",
+            body: formData,
+          });
+          const data = await response.json();
+          document.getElementById("uploaded-image").src = data["image_url"];
+          document.getElementById("uploaded-image").style.display = "block";
+          document.getElementById("prediction").innerText =
+            "Predicted Digit: " + data["predicted_digit"];
+        });
+    </script>
+  </body>
+</html>
